@@ -7,12 +7,12 @@ import java.util.Scanner;
 
 
 class Scratch {
-    static int win = 3;
+    static int win = 3; // win condition 0=O win, 1=X win,2 = Tie
     static int debug = 1; // A Value of 1 enables debug mode, a Value of 0 disables it.
     static char Board_Player[][]; //The board the player will see
     static int  Board_Comp[][]; // The board the Computer will use
-    static int playerValue = 4;
-    static char playerLetter = 'O';
+    static int playerValue = 4; // messing with this value will start logical errors
+    static char playerLetter = 'O'; // Can change this to any random Letter - won't change AI's X value
 
 
 
@@ -114,7 +114,7 @@ class Scratch {
 
 
         Board_Player= new char[][]{{'-', '-', '-'}, {'-', '-', '-'}, {'-', '-', '-'}}; // Sets all values of players board to -
-        Board_Comp=new int[][]{{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}};
+        Board_Comp=new int[][]{{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}}; // Clears Array
 
 
     }
@@ -266,7 +266,7 @@ class Scratch {
             }
         }
         if (placement[0]==-1){
-            //Sees if it can win first
+            //Sees if there are two X's in a row meaning that it can win if it places the piece in the next slot
 
             for(int i=0;i<3;i++){
 
@@ -311,6 +311,7 @@ class Scratch {
                     + "\n highest: "
             );
         }
+        // If no win was possible on this move it makes sure there aren't two O's in a row meaning it needs to defend
         if (placement[0]==-1) {
             if (priorityRowValue > -1) {
                 for (int i = 0; i < 3; i++) {
@@ -349,7 +350,7 @@ class Scratch {
 
             }
         }
-        //Priority grabbing middle spot
+        //Priority grabbing middle spot if there defend/attack conditions weren't met
         if (placement[0]==-1){
             if(Board_Comp[1][1]==0) {
                 placement= new int[]{1,1};
@@ -362,7 +363,7 @@ class Scratch {
 
         }
 
-        //Iterates through to find open slot
+        //Iterates through to find open slot if there defend/attack conditions weren't met and priority slots aren't avail
         if (placement[0]==-1){
             for(int i=0;i<3;i++){
                 for(int k=0;k<3;k++){
@@ -372,22 +373,6 @@ class Scratch {
                 }
             }
         }
-/*
-        else {
-
-            for(int i=0;i<3;i++){
-                if(Board_Comp[highestRowValue][highestColValue]==0){
-                    placement=new int[]{highestRowValue,highestColValue};
-                }else{
-                    if(highestRowValue<=0){
-                        highestRowValue=3;
-                    }
-                 2   highestRowValue=highestRowValue-1;
-                }
-            }
-
-        }
-*/
         //Places piece
         if(debug==1) {
             System.out.println("Placements: " + placement[0] + " " + placement[1]);
@@ -395,21 +380,14 @@ class Scratch {
 
         Board_Comp[placement[0]][placement[1]]=1;
         Board_Player[placement[0]][placement[1]]='X';
+        //checks for win after piece is placed
         winChecker();
 
     }
 
 
     public static void main(String[] args) {
-
         resetBoard();
-        // printBoard();
         gameRun();
-
-
-
-
-
-
     }
 }
