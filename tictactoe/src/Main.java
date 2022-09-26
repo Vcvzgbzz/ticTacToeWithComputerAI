@@ -1,0 +1,411 @@
+import java.util.Scanner;
+import java.util.Random;
+
+
+class Scratch {
+    static int win = 3;
+    static int debug = 1; // A Value of 1 enables debug mode, a Value of 0 disables it.
+    static char Board_Player[][]; //The board the player will see
+    static int  Board_Comp[][]; // The board the Computer will use
+    static int playerValue = 4;
+    static char playerLetter = 'O';
+
+
+
+    static void gameRun(){
+        if(win==3){
+            //playerTurn();
+            computerTurn();
+            if(win==3) {
+                //computerTurn();
+                playerTurn();
+            }
+            gameRun();
+        } else if (win==0) {
+            printBoard();
+            System.out.println("\n\nYou have won!");
+        } else if(win==1){
+            printBoard();
+            System.out.println("\n\nThe Computer has bested you!");
+
+        } else if(win==2){
+            printBoard();
+            System.out.println("\n\nA Tie!");
+        }
+
+    }
+    static void winChecker(){
+        Board_Comp[1][4]=0; // total
+        Board_Comp[2][4]=0;
+        Board_Comp[3][4]=0;
+        for(int i =0;i < 3;i++){
+            Board_Comp[i][3] = 0;
+            Board_Comp[3][i] = 0;
+
+        }
+
+
+        /*
+            |	0	0	0	1   0	|
+            |	0   0	0	1   4   |
+            |	0	0	0	1   3	|
+            |	1	1	1	0   3	|
+
+            A value of X = 1, Value of O =4
+            3 in a row of X = 3, 3 in a row of O = 12,
+
+        */
+
+        // Totals Rows
+        for(int i =0; i < 3;i++) {
+            for (int k = 0; k < 3; k++) {
+
+                Board_Comp[i][3] = Board_Comp[i][3] + Board_Comp[i][k];
+            }
+        }
+        // Totals Cols
+        for(int i = 0; i<3;i++){
+            for(int k=0;k<3;k++){
+                Board_Comp[3][i]=Board_Comp[3][i]+Board_Comp[k][i];
+
+            }
+        }
+
+        //Totals Diags
+        for(int i =0; i < 3; i++){
+
+            Board_Comp[2][4]=Board_Comp[2][4]+Board_Comp[i][i];
+            Board_Comp[3][4]=Board_Comp[3][4]+Board_Comp[i][2-i];
+            //Checks Slots for X and O Wins
+            if(Board_Comp[3][4]==12||Board_Comp[2][4]==12){
+                win = 0;
+            }if(Board_Comp[3][4]==3||Board_Comp[2][4]==3) {
+                win =1;
+            }
+
+
+        }
+        // totals board
+        for(int i=0;i<3;i++){
+            Board_Comp[1][4]= Board_Comp[i][3] + Board_Comp[1][4];
+        }
+        for(int i =0;i <3;i++){
+            // Checks Collumns and Rows for X wins
+            if(Board_Comp[3][i]==3||Board_Comp[i][3]==3){
+                win =1;
+            }
+            // Checks Collumns and Rows for O wins
+            if(Board_Comp[i][3]==12||Board_Comp[3][i]==12){
+                win =0;
+            }
+        }
+        if(Board_Comp[1][4]==24||Board_Comp[1][4]==21){
+            if (win==3){ // Incase a win condition was met on the last move
+                win =2;
+            }
+
+        }
+    }
+    static void resetBoard(){
+
+
+        Board_Player= new char[][]{{'-', '-', '-'}, {'-', '-', '-'}, {'-', '-', '-'}}; // Sets all values of players board to -
+        Board_Comp=new int[][]{{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}};
+
+
+    }
+    static void printBoard(){
+        //Prints players board first
+        System.out.print("_________________");
+        for(int i=0;i < 3;i++) {
+            System.out.print("\t\n|");
+            for (int k = 0; k < 3; k++) {
+
+                System.out.print("\t"+Board_Player[i][k]);
+            }
+            System.out.print("\t|");
+        }
+        System.out.print("\n_________________");
+        if (debug==1){
+            System.out.println();
+            for(int i=0;i < 4;i++) {
+                System.out.print("\t\n|");
+                for (int k = 0; k < 5; k++) {
+
+                    System.out.print("\t"+Board_Comp[i][k]);
+                }
+                System.out.print("\t|");
+            }
+            System.out.print("\n_________________");
+
+            /*
+            Below shows a diagram of where the totals are stored for calculating who has won. 1's Represent where Row/Column
+            totals will be stored, while the 3's show where the diagnal totals will go. The 4 is the total of the whole board.
+            |	0	0	0	1   0	|
+            |	0   0	0	1   4   |
+            |	0	0	0	1   3	|
+            |	1	1	1	0   3	|
+
+
+
+             */
+        }
+    }
+
+
+    static void printPlacementBoard(){
+        System.out.println("\n_________________\t\n" +
+                "|\t1\t2\t3\t|\t\n" +
+                "|\t4\t5\t6\t|\t\n" +
+                "|\t7\t8\t9\t|\n" +
+                "_________________");
+    }
+    static void playerTurn(){
+
+        System.out.println("-----------------------------\n\n");
+        printBoard();
+        printPlacementBoard();
+        System.out.println("\nWhere would you like to place your piece?\nUse the numbered chart below the board to find placement.");
+        grabPlacement();
+
+
+    }
+    static void verifyPlacement(int place[]){
+
+        if(Board_Comp[place[0]][place[1]]==0){
+
+            Board_Comp[place[0]][place[1]]=playerValue;
+            Board_Player[place[0]][place[1]]=playerLetter;
+            winChecker();
+        }else{
+            System.out.println("This position is filled, select a different spot");
+            grabPlacement();
+        }
+    }
+    static int grabPlacement(){
+        int[] place;
+        Scanner myScan = new Scanner(System.in);
+        int placement = myScan.nextInt();
+        switch (placement){
+            case 1:
+                place = new int[]{0, 0};
+                verifyPlacement(place);
+                break;
+            case 2:
+                place = new int[]{0, 1};
+                verifyPlacement(place);
+                break;
+            case 3:
+                place = new int[]{0, 2};
+                verifyPlacement(place);
+                break;
+            case 4:
+                place = new int[]{1, 0};
+                verifyPlacement(place);
+                break;
+            case 5:
+                place = new int[]{1, 1};
+                verifyPlacement(place);
+                break;
+            case 6:
+                place = new int[]{1, 2};
+                verifyPlacement(place);
+                break;
+            case 7:
+                place = new int[]{2,0};
+                verifyPlacement(place);
+                break;
+            case 8:
+                place = new int[]{2,1};
+                verifyPlacement(place);
+                break;
+            case 9:
+                place = new int[]{2,2};
+                verifyPlacement(place);
+                break;
+        }
+
+        // System.out.println(placement);
+        return placement;
+    }
+
+
+    static void computerTurn(){
+        /* LOGIC BEHIND AI
+
+        Wrote this AI to be go on the offensive only if there is no defensive plays needed. It does this through checking
+        Priority rows and columns meaning if there is a value of 8 stored in the totaling slots in the Board_Comp array
+        it knows the next play could end up winning the game for the opponent, so it must be defensive. The only time that this
+        is overruled is if the next move can win the game for the AI such as a col or row totaling 2 meaning the last
+        slot could win the game. Same logic was applied to Diags
+
+
+
+         */
+
+        int priorityRowValue =-1;
+        int priorityColValue =-1;
+        int priorityDiag1Value = -1;
+        int priorityDiag2Value =-1;
+        int[] placement = new int[]{-1,-1};
+        for(int i=0;i<3;i++){
+
+            if(Board_Comp[i][3]==8) {
+                priorityRowValue = i;
+            }if(Board_Comp[3][i]==8) {
+                priorityColValue = i;
+            }if(Board_Comp[3][4]==8){
+                priorityDiag2Value=2;
+            }
+            if(Board_Comp[2][4]==8){
+                priorityDiag2Value=2;
+            }
+        }
+        if (placement[0]==-1){
+            //Sees if it can win first
+
+            for(int i=0;i<3;i++){
+
+
+                if(Board_Comp[i][3]==2) {
+
+                    placement[0] = i;
+                    for(int k=0;k<3;k++) {
+                        if (Board_Comp[i][k] == 0) {
+                            placement[1] = k;
+                        }
+                    }
+                }if(Board_Comp[3][i]==2) {
+                    placement[1] = i;
+                    for(int k=0;k<3;k++) {
+                        if(Board_Comp[i][k]==0) {
+                            placement[0]=k;
+                        }
+                    }
+                }
+
+            }
+            if(Board_Comp[3][4]==2){
+                for(int i=0;i<3;i++){
+                    if(Board_Comp[i][2-i]==0){
+                        placement= new int[]{i,2-i};
+                    }
+
+                }
+            }
+            if(Board_Comp[2][4]==2){
+                for(int i=0;i<3;i++){
+                    if(Board_Comp[i][i]==0){
+                        placement= new int[]{i,i};
+                    }
+
+                }
+            }
+        }
+        if(debug==1) {
+            System.out.println("priorities: " + priorityRowValue + "\t" + priorityColValue
+                    + "\n highest: "
+            );
+        }
+        if (placement[0]==-1) {
+            if (priorityRowValue > -1) {
+                for (int i = 0; i < 3; i++) {
+                    if (Board_Comp[priorityRowValue][i] == 0) {
+                        placement = new int[]{priorityRowValue, i};
+                        if(debug==1) {
+                            System.out.println("Placement PR: " + placement[0] + " " + placement[1]);
+                        }
+                    }
+                }
+            }
+            if (priorityColValue > -1) {
+                for (int i = 0; i < 3; i++) {
+                    if (Board_Comp[i][priorityColValue] == 0) {
+                        placement = new int[]{i, priorityColValue};
+                        if(debug==1) {
+                            System.out.println("Placement PC: " + placement[0] + " " + placement[1]);
+                        }
+                    }
+                }
+
+            } if(priorityDiag1Value>-1){
+                for(int i=0;i<3;i++){
+                    if(Board_Comp[i][i]==0){
+                        placement= new int[]{i,i};
+                    }
+
+                }
+            }if(priorityDiag2Value>-1) {
+                for(int i=0;i<3;i++){
+                    if(Board_Comp[i][2-i]==0){
+                        placement= new int[]{i,2-i};
+                    }
+
+                }
+
+            }
+        }
+        //Priority grabbing middle spot
+        if (placement[0]==-1){
+            if(Board_Comp[1][1]==0) {
+                placement= new int[]{1,1};
+            }
+            else if(Board_Comp[0][0]==0) {
+                placement= new int[]{0,0};
+            }else if(Board_Comp[2][0]==0) {
+                placement= new int[]{2,0};
+            }
+
+        }
+
+        //Iterates through to find open slot
+        if (placement[0]==-1){
+            for(int i=0;i<3;i++){
+                for(int k=0;k<3;k++){
+                    if(Board_Comp[i][k]==0){
+                        placement= new int[]{i,k};
+                    }
+                }
+            }
+        }
+/*
+        else {
+
+            for(int i=0;i<3;i++){
+                if(Board_Comp[highestRowValue][highestColValue]==0){
+                    placement=new int[]{highestRowValue,highestColValue};
+                }else{
+                    if(highestRowValue<=0){
+                        highestRowValue=3;
+                    }
+                 2   highestRowValue=highestRowValue-1;
+                }
+            }
+
+        }
+*/
+        //Places piece
+        if(debug==1) {
+            System.out.println("Placements: " + placement[0] + " " + placement[1]);
+        }
+
+        Board_Comp[placement[0]][placement[1]]=1;
+        Board_Player[placement[0]][placement[1]]='X';
+        winChecker();
+
+    }
+
+
+    public static void main(String[] args) {
+
+        resetBoard();
+        // printBoard();
+        gameRun();
+
+
+
+
+
+
+    }
+}
