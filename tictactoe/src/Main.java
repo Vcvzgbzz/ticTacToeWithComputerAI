@@ -1,5 +1,9 @@
+//CREATED BY JADEYN FINCHER
+//jadeyn.fincher@gmail.com
+
+
 import java.util.Scanner;
-import java.util.Random;
+
 
 
 class Scratch {
