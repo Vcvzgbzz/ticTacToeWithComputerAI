@@ -8,41 +8,50 @@ import java.util.Scanner;
 
 class Scratch {
     static int win = 3; // win condition 0=O win, 1=X win,2 = Tie
-    static int debug = 1; // A Value of 1 enables debug mode, a Value of 0 disables it.
+    static int debug = 0; // A Value of 1 enables debug mode, a Value of 0 disables it.
     static char Board_Player[][]; //The board the player will see
-    static int  Board_Comp[][]; // The board the Computer will use
+    static int Board_Comp[][]; // The board the Computer will use
     static int playerValue = 4; // messing with this value will start logical errors
     static char playerLetter = 'O'; // Can change this to any random Letter - won't change AI's X value
+    static int who_goes_first = 0; // val of 1 equals player first - handled by menu
 
-
-
-    static void gameRun(){
-        if(win==3){
-            //playerTurn();
-            computerTurn();
-            if(win==3) {
-                //computerTurn();
+    static void gameRun() {
+        if (win == 3) {
+            if(who_goes_first==1){
                 playerTurn();
+            }else {
+
+                computerTurn();
+            }
+            if (win == 3) {
+                if(who_goes_first==1){
+                    computerTurn();
+                }else {
+
+                    playerTurn();
+                }
+
             }
             gameRun();
-        } else if (win==0) {
+        } else if (win == 0) {
             printBoard();
             System.out.println("\n\nYou have won!");
-        } else if(win==1){
+        } else if (win == 1) {
             printBoard();
             System.out.println("\n\nThe Computer has bested you!");
 
-        } else if(win==2){
+        } else if (win == 2) {
             printBoard();
             System.out.println("\n\nA Tie!");
         }
 
     }
-    static void winChecker(){
-        Board_Comp[1][4]=0; // total
-        Board_Comp[2][4]=0;
-        Board_Comp[3][4]=0;
-        for(int i =0;i < 3;i++){
+
+    static void winChecker() {
+        Board_Comp[1][4] = 0; // total
+        Board_Comp[2][4] = 0;
+        Board_Comp[3][4] = 0;
+        for (int i = 0; i < 3; i++) {
             Board_Comp[i][3] = 0;
             Board_Comp[3][i] = 0;
 
@@ -61,82 +70,85 @@ class Scratch {
         */
 
         // Totals Rows
-        for(int i =0; i < 3;i++) {
+        for (int i = 0; i < 3; i++) {
             for (int k = 0; k < 3; k++) {
 
                 Board_Comp[i][3] = Board_Comp[i][3] + Board_Comp[i][k];
             }
         }
         // Totals Cols
-        for(int i = 0; i<3;i++){
-            for(int k=0;k<3;k++){
-                Board_Comp[3][i]=Board_Comp[3][i]+Board_Comp[k][i];
+        for (int i = 0; i < 3; i++) {
+            for (int k = 0; k < 3; k++) {
+                Board_Comp[3][i] = Board_Comp[3][i] + Board_Comp[k][i];
 
             }
         }
 
         //Totals Diags
-        for(int i =0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
 
-            Board_Comp[2][4]=Board_Comp[2][4]+Board_Comp[i][i];
-            Board_Comp[3][4]=Board_Comp[3][4]+Board_Comp[i][2-i];
+            Board_Comp[2][4] = Board_Comp[2][4] + Board_Comp[i][i];
+            Board_Comp[3][4] = Board_Comp[3][4] + Board_Comp[i][2 - i];
             //Checks Slots for X and O Wins
-            if(Board_Comp[3][4]==12||Board_Comp[2][4]==12){
+            if (Board_Comp[3][4] == 12 || Board_Comp[2][4] == 12) {
                 win = 0;
-            }if(Board_Comp[3][4]==3||Board_Comp[2][4]==3) {
-                win =1;
+            }
+            if (Board_Comp[3][4] == 3 || Board_Comp[2][4] == 3) {
+                win = 1;
             }
 
 
         }
         // totals board
-        for(int i=0;i<3;i++){
-            Board_Comp[1][4]= Board_Comp[i][3] + Board_Comp[1][4];
+        for (int i = 0; i < 3; i++) {
+            Board_Comp[1][4] = Board_Comp[i][3] + Board_Comp[1][4];
         }
-        for(int i =0;i <3;i++){
+        for (int i = 0; i < 3; i++) {
             // Checks Collumns and Rows for X wins
-            if(Board_Comp[3][i]==3||Board_Comp[i][3]==3){
-                win =1;
+            if (Board_Comp[3][i] == 3 || Board_Comp[i][3] == 3) {
+                win = 1;
             }
             // Checks Collumns and Rows for O wins
-            if(Board_Comp[i][3]==12||Board_Comp[3][i]==12){
-                win =0;
+            if (Board_Comp[i][3] == 12 || Board_Comp[3][i] == 12) {
+                win = 0;
             }
         }
-        if(Board_Comp[1][4]==24||Board_Comp[1][4]==21){
-            if (win==3){ // Incase a win condition was met on the last move
-                win =2;
+        if (Board_Comp[1][4] == 24 || Board_Comp[1][4] == 21) {
+            if (win == 3) { // Incase a win condition was met on the last move
+                win = 2;
             }
 
         }
     }
-    static void resetBoard(){
+
+    static void resetBoard() {
 
 
-        Board_Player= new char[][]{{'-', '-', '-'}, {'-', '-', '-'}, {'-', '-', '-'}}; // Sets all values of players board to -
-        Board_Comp=new int[][]{{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}}; // Clears Array
+        Board_Player = new char[][]{{'-', '-', '-'}, {'-', '-', '-'}, {'-', '-', '-'}}; // Sets all values of players board to -
+        Board_Comp = new int[][]{{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}}; // Clears Array
 
 
     }
-    static void printBoard(){
+
+    static void printBoard() {
         //Prints players board first
         System.out.print("_________________");
-        for(int i=0;i < 3;i++) {
+        for (int i = 0; i < 3; i++) {
             System.out.print("\t\n|");
             for (int k = 0; k < 3; k++) {
 
-                System.out.print("\t"+Board_Player[i][k]);
+                System.out.print("\t" + Board_Player[i][k]);
             }
             System.out.print("\t|");
         }
         System.out.print("\n_________________");
-        if (debug==1){
+        if (debug == 1) {
             System.out.println();
-            for(int i=0;i < 4;i++) {
+            for (int i = 0; i < 4; i++) {
                 System.out.print("\t\n|");
                 for (int k = 0; k < 5; k++) {
 
-                    System.out.print("\t"+Board_Comp[i][k]);
+                    System.out.print("\t" + Board_Comp[i][k]);
                 }
                 System.out.print("\t|");
             }
@@ -157,14 +169,15 @@ class Scratch {
     }
 
 
-    static void printPlacementBoard(){
+    static void printPlacementBoard() {
         System.out.println("\n_________________\t\n" +
                 "|\t1\t2\t3\t|\t\n" +
                 "|\t4\t5\t6\t|\t\n" +
                 "|\t7\t8\t9\t|\n" +
                 "_________________");
     }
-    static void playerTurn(){
+
+    static void playerTurn() {
 
         System.out.println("-----------------------------\n\n");
         printBoard();
@@ -174,64 +187,77 @@ class Scratch {
 
 
     }
-    static void verifyPlacement(int place[]){
 
-        if(Board_Comp[place[0]][place[1]]==0){
+    static void verifyPlacement(int place[]) {
 
-            Board_Comp[place[0]][place[1]]=playerValue;
-            Board_Player[place[0]][place[1]]=playerLetter;
+        if (Board_Comp[place[0]][place[1]] == 0) {
+
+            Board_Comp[place[0]][place[1]] = playerValue;
+            Board_Player[place[0]][place[1]] = playerLetter;
             winChecker();
-        }else{
+        } else {
             System.out.println("This position is filled, select a different spot");
             grabPlacement();
         }
     }
-    static int grabPlacement(){
-        int[] place;
-        Scanner myScan = new Scanner(System.in);
-        int placement = myScan.nextInt();
-        switch (placement){
-            case 1:
-                place = new int[]{0, 0};
-                verifyPlacement(place);
-                break;
-            case 2:
-                place = new int[]{0, 1};
-                verifyPlacement(place);
-                break;
-            case 3:
-                place = new int[]{0, 2};
-                verifyPlacement(place);
-                break;
-            case 4:
-                place = new int[]{1, 0};
-                verifyPlacement(place);
-                break;
-            case 5:
-                place = new int[]{1, 1};
-                verifyPlacement(place);
-                break;
-            case 6:
-                place = new int[]{1, 2};
-                verifyPlacement(place);
-                break;
-            case 7:
-                place = new int[]{2,0};
-                verifyPlacement(place);
-                break;
-            case 8:
-                place = new int[]{2,1};
-                verifyPlacement(place);
-                break;
-            case 9:
-                place = new int[]{2,2};
-                verifyPlacement(place);
-                break;
-        }
 
+    static int grabPlacement() {
+        int placement = 0;
+        try {
+            int[] place;
+            Scanner myScan = new Scanner(System.in);
+            placement = myScan.nextInt();
+            switch (placement) {
+                case 1:
+                    place = new int[]{0, 0};
+                    verifyPlacement(place);
+                    break;
+                case 2:
+                    place = new int[]{0, 1};
+                    verifyPlacement(place);
+                    break;
+                case 3:
+                    place = new int[]{0, 2};
+                    verifyPlacement(place);
+                    break;
+                case 4:
+                    place = new int[]{1, 0};
+                    verifyPlacement(place);
+                    break;
+                case 5:
+                    place = new int[]{1, 1};
+                    verifyPlacement(place);
+                    break;
+                case 6:
+                    place = new int[]{1, 2};
+                    verifyPlacement(place);
+                    break;
+                case 7:
+                    place = new int[]{2, 0};
+                    verifyPlacement(place);
+                    break;
+                case 8:
+                    place = new int[]{2, 1};
+                    verifyPlacement(place);
+                    break;
+                case 9:
+                    place = new int[]{2, 2};
+                    verifyPlacement(place);
+                    break;
+                default:
+                    System.out.println("Value Not accepted!");
+                    playerTurn();
+                    break;
+
+            }
+        } catch (Exception e) {
+            System.out.println("Unknown option");
+            playerTurn();
+        }
         // System.out.println(placement);
         return placement;
     }
+
 
 
     static void computerTurn(){
@@ -385,9 +411,22 @@ class Scratch {
 
     }
 
-
+    static void menu(){
+        try{
+        System.out.println("Would you like to be the first placer or the second? Please enter 1 or 2");
+        Scanner myScan = new Scanner(System.in);
+        int option_for_sequence = myScan.nextInt();
+        if(option_for_sequence==1){
+            who_goes_first =1;
+        }
+        } catch(Exception e){
+            System.out.println("Unknown Option please renter!");
+            menu();
+            }
+    }
     public static void main(String[] args) {
         resetBoard();
+        menu();
         gameRun();
     }
 }
