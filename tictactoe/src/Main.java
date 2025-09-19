@@ -263,11 +263,12 @@ class Scratch {
     static void computerTurn(){
         /* LOGIC BEHIND AI
 
-        Wrote this AI to be go on the offensive only if there is no defensive plays needed. It does this through checking
-        Priority rows and columns meaning if there is a value of 8 stored in the totaling slots in the Board_Comp array
-        it knows the next play could end up winning the game for the opponent, so it must be defensive. The only time that this
-        is overruled is if the next move can win the game for the AI such as a col or row totaling 2 meaning the last
-        slot could win the game. Same logic was applied to Diags
+        I designed this AI to play offensively only when no defensive moves are required. 
+        It evaluates priority rows and columns by checking if the Board_Comp array contains a total of 8 in any line—indicating that the opponent is one move away from winning.
+        In such cases, the AI switches to a defensive move to block.
+        The only exception is if the AI itself can win in the next move—for example, if a row, column, or diagonal totals 2, meaning the final slot would secure a win. 
+        The same logic applies to diagonals as well.
+
 
 
 
